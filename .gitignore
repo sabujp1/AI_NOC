@@ -1,4 +1,4 @@
-# Secrets — NEVER commit the real .env
+# Secrets — credentials live in docker-compose.yml; keep .env local only
 .env
 
 # Python
