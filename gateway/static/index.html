@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AIOps NOC Platform - Service Assurance Dashboard</title>
+    <!-- Modern Premium Typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/style.css">
+
+</head>
+<body>
+    <!-- Auth Shield Overlay -->
+    <div id="auth-overlay" class="glass-overlay">
+        <div class="auth-card glass-panel card-glow">
+            <div class="auth-logo">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <h2>AIOps NOC Platform</h2>
+                <p>Enterprise Network Operations Sign In</p>
+            </div>
+            <form id="login-form">
+                <div class="form-group">
+                    <label for="username">Operator Username</label>
+                    <input type="text" id="username" required placeholder="admin">
+                </div>
+                <div class="form-group">
+                    <label for="password">Security Password</label>
+                    <input type="password" id="password" required placeholder="••••••••">
+                </div>
+                <div id="auth-error" class="error-msg hide">Invalid security credentials</div>
+                <button type="submit" class="btn btn-primary btn-glow">Authenticate Session</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Main Application Container -->
+    <div id="app-container" class="dashboard-grid hide">
+        
+        <!-- Top Navigation Header -->
+        <header class="app-header glass-panel">
+            <div class="header-logo">
+                <svg class="logo-icon" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <h1>AIOps NOC Platform <span class="badge badge-purple">AI-Powered</span></h1>
+            </div>
+            
+            <div class="header-status">
+                <div class="status-indicator">
+                    <div id="ws-dot" class="dot dot-red blinking-glow"></div>
+                    <span id="ws-status-text">Connecting Alert Stream...</span>
+                </div>
+                <div class="divider"></div>
+                <button id="settings-btn" class="btn btn-icon" title="API Gateway Settings">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="3"/>
+                        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+                    </svg>
+                </button>
+                <div class="divider"></div>
+                <div class="user-profile">
+                    <span class="user-role">NOC Admin Operator</span>
+                    <button id="logout-btn" class="btn btn-icon" title="Logout Session">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Summary Statistics Row -->
+        <section class="summary-section">
+            <div class="metric-card glass-panel card-glow-green">
+                <div class="metric-info">
+                    <span class="metric-label">Network Health Status</span>
+                    <h3 class="metric-value text-green">Operational</h3>
+                </div>
+                <div class="metric-icon bg-green-dim">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2">
+                        <path d="M22 12h-4l-3 9L9 3l-3 9H2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </div>
+            </div>
+
+            <div class="metric-card glass-panel card-glow-purple">
+                <div class="metric-info">
+                    <span class="metric-label">Devices Monitored</span>
+                    <h3 class="metric-value text-purple" id="stats-devices">6 Active</h3>
+                </div>
+                <div class="metric-icon bg-purple-dim">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#a78bfa" stroke-width="2">
+                        <rect x="2" y="2" width="20" height="8" rx="2" ry="2"/>
+                        <rect x="2" y="14" width="20" height="8" rx="2" ry="2"/>
+                        <line x1="6" y1="6" x2="6.01" y2="6"/>
+                        <line x1="6" y1="18" x2="6.01" y2="18"/>
+                    </svg>
+                </div>
+            </div>
+
+            <div class="metric-card glass-panel card-glow-amber" id="critical-alarms-card">
+                <div class="metric-info">
+                    <span class="metric-label">Active Alarm Faults</span>
+                    <h3 class="metric-value text-amber" id="stats-alerts">0 Alarms</h3>
+                </div>
+                <div class="metric-icon bg-amber-dim">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2">
+                        <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+                        <line x1="12" y1="9" x2="12" y2="13"/>
+                        <line x1="12" y1="17" x2="12.01" y2="17"/>
+                    </svg>
+                </div>
+            </div>
+
+            <div class="metric-card glass-panel card-glow-blue">
+                <div class="metric-info">
+                    <span class="metric-label">Auto-Remediations</span>
+                    <h3 class="metric-value text-blue" id="stats-remedies">2 Executed</h3>
+                </div>
+                <div class="metric-icon bg-blue-dim">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2">
+                        <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>
+                    </svg>
+                </div>
+            </div>
+        </section>
+
+        <!-- Main Body Grid -->
+        <main class="dashboard-body">
+            
+            <!-- Left Panel: Monitored Devices List -->
+            <div class="panel-column">
+                <div class="glass-panel main-panel">
+                    <div class="panel-header border-bottom">
+                        <div class="panel-title text-purple">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="2" y="2" width="20" height="8" rx="2" ry="2"/>
+                                <rect x="2" y="14" width="20" height="8" rx="2" ry="2"/>
+                                <line x1="6" y1="6" x2="6.01" y2="6"/>
+                                <line x1="6" y1="18" x2="6.01" y2="18"/>
+                            </svg>
+                            <h2>Monitored Devices List</h2>
+                        </div>
+                        <span class="badge badge-purple" id="devices-badge">0 Devices</span>
+                    </div>
+                    
+                    <div class="device-list-container scrollable">
+                        <div id="device-list" class="device-list-grid">
+                            <!-- Devices will dynamically load here -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Inspector Card -->
+                <div class="glass-panel sub-panel">
+                    <div class="panel-header border-bottom">
+                        <div class="panel-title">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="10"/>
+                                <line x1="12" y1="16" x2="12" y2="12"/>
+                                <line x1="12" y1="8" x2="12.01" y2="8"/>
+                            </svg>
+                            <h2>Device Telemetry Inspector</h2>
+                        </div>
+                    </div>
+                    <div id="inspector-content" class="inspector-body">
+                        <div class="empty-state">
+                            <p>Click on any device card in the Monitored Devices List above to inspect its telemetry, management IP, hardware model, OS, and alert status.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Panel: Alerts and AI Copilot -->
+            <div class="panel-column">
+                
+                <!-- Webhook Event alerts -->
+                <div class="glass-panel main-panel alert-panel flex-column">
+                    <div class="panel-header border-bottom">
+                        <div class="panel-title">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 0 1-3.46 0"/>
+                            </svg>
+                            <h2>Real-Time Syslog & Webhook Alerts</h2>
+                        </div>
+                        <button id="clear-alerts-btn" class="btn btn-secondary btn-sm">Flush Events</button>
+                    </div>
+                    
+                    <div id="alert-stream" class="alert-list-container flex-grow scrollable">
+                        <div class="empty-alert-state" id="empty-alerts">
+                            <div class="pulse-ring"></div>
+                            <p>Listening for inbound SNMP traps and LibreNMS alert webhooks...</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- AI Copilot Panel -->
+                <div class="glass-panel main-panel ai-panel flex-column card-glow-purple">
+                    <div class="panel-header border-bottom">
+                        <div class="panel-title text-purple">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+                                <polyline points="3.27 6.96 12 12.01 20.73 6.96"/>
+                                <line x1="12" y1="22.08" x2="12" y2="12"/>
+                            </svg>
+                            <h2>AI NOC Assistant Terminal</h2>
+                        </div>
+                        <span class="badge badge-purple">LLM-Active</span>
+                    </div>
+
+                    <!-- Chat conversation stream -->
+                    <div id="ai-chat-stream" class="chat-container flex-grow scrollable">
+                        <div class="chat-message system-chat">
+                            <p>Hello! I am your AI Ops Copilot. I scan the LibreNMS data, topology metrics, and logs.</p>
+                            <p>Try clicking <strong>"Ask AI"</strong> on any alert above, or ask me a query in the terminal below.</p>
+                            <div class="quick-queries">
+                                <button class="btn btn-outline quick-query-btn" data-query="Analyze: core-sw-01 alert BGP neighbors down">Analyze BGP Downtime</button>
+                                <button class="btn btn-outline quick-query-btn" data-query="Explain network blast-radius if border-router-01 interface fails">Evaluate Blast-Radius</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Chat input terminal -->
+                    <div class="chat-input-bar">
+                        <form id="ai-query-form" class="flex-row">
+                            <input type="text" id="ai-query-input" placeholder="Type AI Ops query or device root-cause request..." autocomplete="off">
+                            <button type="submit" class="btn btn-purple btn-glow btn-sm">Ask Copilot</button>
+                        </form>
+                    </div>
+                </div>
+
+            </div>
+
+        </main>
+    </div>
+
+    <!-- Settings Config Overlay Modal -->
+    <div id="settings-modal" class="glass-overlay hide">
+        <div class="auth-card glass-panel card-glow-purple" style="width: 450px;">
+            <div class="panel-header border-bottom" style="padding: 0 0 0.8rem 0; margin-bottom: 1.2rem;">
+                <div class="panel-title text-purple">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="3"/>
+                        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+                    </svg>
+                    <h2 style="font-size: 1.15rem; font-weight: 600;">API & Core Configuration</h2>
+                </div>
+                <button id="close-settings-btn" class="btn btn-icon" style="width: 26px; height: 26px; padding: 0;">&times;</button>
+            </div>
+            
+            <form id="settings-form">
+                <div class="form-group">
+                    <label for="settings-librenms-url">LibreNMS API Endpoint URL</label>
+                    <input type="url" id="settings-librenms-url" required placeholder="http://librenms.example.com/api/v0">
+                </div>
+                <div class="form-group">
+                    <label for="settings-librenms-token">LibreNMS API Access Token</label>
+                    <input type="text" id="settings-librenms-token" required placeholder="your_api_token">
+                </div>
+                <div class="form-group">
+                    <label for="settings-llm-provider">Active LLM Provider</label>
+                    <select id="settings-llm-provider" style="background-color: rgba(5, 7, 18, 0.6); border: 1px solid var(--border-color); border-radius: 8px; padding: 0.65rem 0.9rem; color: var(--text-primary); outline: none; font-family: var(--font-sans);">
+                        <option value="gemini">Google Gemini</option>
+                        <option value="openai">OpenAI GPT</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="settings-gemini-key">Gemini API Key</label>
+                    <input type="text" id="settings-gemini-key" required placeholder="AQ.Ab8...">
+                </div>
+                <div class="form-group">
+                    <label for="settings-openai-key">OpenAI API Key (AI Operations)</label>
+                    <input type="text" id="settings-openai-key" required placeholder="sk-...">
+                </div>
+                <div class="form-group">
+                    <label for="settings-llm-model">LLM Inference Model</label>
+                    <input type="text" id="settings-llm-model" required placeholder="gemini-1.5-flash">
+                </div>
+                <div id="settings-status" class="error-msg hide" style="color: var(--green); text-align: left; margin-bottom: 1rem;">Settings successfully updated!</div>
+                <div class="flex-row" style="justify-content: flex-end; margin-top: 1rem;">
+                    <button type="button" id="cancel-settings-btn" class="btn btn-secondary btn-sm">Discard</button>
+                    <button type="submit" class="btn btn-primary btn-glow btn-sm">Apply & Persist</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Client Logic scripts -->
+    <script src="/static/app.js"></script>
+</body>
+</html>
